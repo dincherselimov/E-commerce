@@ -1,0 +1,116 @@
+<?php
+
+
+class JacketsRepository extends Db {
+
+    /**
+     * function create - create a new item in the database which name is 'jackets'
+     * @param $data
+     * @return bool
+     */
+    public function create($data){
+        $sql = "
+        INSERT INTO jackets(jacket_id,brand,description,model,rating,price,image)
+        VALUES (NULL,:brand, :description, :model, :rating, :price, :image);
+        ";
+
+        /**
+         * Connect to the database and prepare to execute sql queries
+         */
+        $stmt= $this->conn->prepare($sql);
+        $stmt->bindValue(":brand", $data["brand"],PDO::PARAM_STR);
+        $stmt->bindValue(":description", $data["description"],PDO::PARAM_STR);
+        $stmt->bindValue(":model", $data["model"],PDO::PARAM_STR);
+        $stmt->bindValue(":rating", $data["rating"],PDO::PARAM_INT);
+        $stmt->bindValue(":price", $data["price"],PDO::PARAM_INT);
+        $stmt->bindValue(":image", $data["image"],PDO::PARAM_STR);
+
+        return $stmt->execute();
+    }
+
+
+    /**
+     * Get all items form the database from table shoes
+     */
+    public function getAll() {
+        $sql = "
+            SELECT * FROM jackets
+        ";
+        $stmt = $this->conn->query($sql);
+        return $stmt->fetchAll(PDO::FETCH_OBJ);
+    }
+
+    public function getAllByTopic($topic){
+        $sql = "
+        SELECT * FROM jackets
+        WHERE brand LIKE CONCAT('%',:topic,'%') OR
+              description LIKE CONCAT('%',:topic,'%') OR
+              model LIKE CONCAT('%',:topic,'%')
+        ";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindValue(":topic", $topic, PDO::PARAM_STR);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_OBJ);
+    }
+
+    /**
+     * Get certain item with id = id
+     * @param $jacket_id
+     * @return mixed
+     */
+    public function getById($jacket_id){
+        $sql = "
+        Select * FROM jackets WHERE jacket_id = :jacket_id
+        ";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindValue(":jacket_id", $jacket_id, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_OBJ);
+    }
+
+    /**
+     * @param $data
+     * @return bool
+     * update an item in table jackets
+     */
+    public  function update($data){
+        $sql = "
+            UPDATE  
+            jackets 
+            SET
+                brand = :brand,
+                description = :description,
+                model = :model,
+                rating = :rating,
+                price = :price,
+                image = :image
+            
+                WHERE jacket_id = :jacket_id
+      ";
+
+        $stmt= $this->conn->prepare($sql);
+        $stmt->bindValue(":jacket_id", $data["jacket_id"],PDO::PARAM_INT);
+        $stmt->bindValue(":brand", $data["brand"],PDO::PARAM_STR);
+        $stmt->bindValue(":description", $data["description"],PDO::PARAM_STR);
+        $stmt->bindValue(":model", $data["model"],PDO::PARAM_STR);
+        $stmt->bindValue(":rating", $data["rating"],PDO::PARAM_INT);
+        $stmt->bindValue(":price", $data["price"],PDO::PARAM_INT);
+        $stmt->bindValue(":image", $data["image"],PDO::PARAM_STR);
+        return $stmt->execute();
+    }
+
+    /**
+     * @param $jacket_id
+     * @return bool
+     * delete an item from table jackets where id = id
+     */
+    public function delete($jacket_id){
+        $sql = "
+        DELETE FROM jackets 
+            WHERE jacket_id = :jacket_id
+        ";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindValue(":jacket_id", $jacket_id, PDO::PARAM_INT);
+        return $stmt->execute();
+    }
+}
