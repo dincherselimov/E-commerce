@@ -1,1 +1,1 @@
-# IMBD type project
+Course project PHP 
