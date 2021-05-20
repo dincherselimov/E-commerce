@@ -12,7 +12,7 @@ echo  "
 </form>
 
 
-
+ 
 <h3>Comments:</h3>
 <input type='text' id='message' placeholder='I like this movie because...'>
 <button id='addComment'>Comment</button>
@@ -48,7 +48,7 @@ echo  "
 
         document.getElementById('message').value = '';
     }
-
+ 
 </script>
 
 ";
